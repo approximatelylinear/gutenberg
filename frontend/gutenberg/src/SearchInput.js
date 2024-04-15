@@ -1,29 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const SearchInput = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const handleInputChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
+const SearchInput = ({ searchQuery, handleSearch, handleInputChange }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch('http://localhost:8000/search?query=' + encodeURIComponent(searchQuery) + '&index=' + encodeURIComponent('gutenberg_0'), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => {
-                console.log("Response headers:", response.headers);
-                return response.json();
-            })
-            .then(data => {
-                // Handle search results
-                console.log(data);
-            })
-            .catch(error => console.error('Error:', error));
+        handleSearch(searchQuery);
     };
 
     const handleKeyPress = (e) => {
