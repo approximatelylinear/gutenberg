@@ -20,7 +20,7 @@ class Searcher:
         with open(path, "r") as f:
             return Template(f.read())
 
-    def search(self, query):
+    def search(self, query, page_number=1, highlight=False, size=10):
         # Render the template with the query string
         es_query = self.query_template.render(qs=query)
         result = self.es_client.search(
