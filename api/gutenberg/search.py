@@ -29,7 +29,8 @@ class Searcher:
         )
         hits = result['hits']['hits']
         # return just the title
-        hits = [{'title': hit['_source']['title']} for hit in hits]
+        # hits = [{'title': hit['_source']['title']} for hit in hits]
+        hits = [hit['_source'] for hit in hits]
         return hits
 
     def random_doc(self):
