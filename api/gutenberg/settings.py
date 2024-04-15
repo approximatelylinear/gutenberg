@@ -12,4 +12,4 @@ ELASTIC_PASSWORD = os.environ.get('ELASTIC_PASSWORD')
 CERT_PATH = os.environ.get('CERT_PATH')
 ELASTIC_URL = os.environ.get('ELASTIC_URL')
 SEARCH_CONFIGS_DIR = os.path.join(THIS_DIR, 'search_configs')
-
+FRONTEND_URL = os.environ.get('FRONTEND_URL')
