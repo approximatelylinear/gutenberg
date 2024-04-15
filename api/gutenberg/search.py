@@ -40,3 +40,10 @@ class Searcher:
                         }, "size": 1}
         )
         return result['hits']['hits'][0]['_source']
+
+    def all_docs(self):
+        result = self.es_client.search(
+            index=self.index_name,
+            body={"query": {"match_all": {}}}
+        )
+        return result['hits']['hits']
