@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "gutenberg"
+version = "0.1.0"
+description = ""
+authors = ["MJ Berends <mjr.berends@gmail.com>"]
+readme = "README.md"
+
+packages = [
+    { include = "gutenberg", from = "api"},
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+elasticsearch = "^8.13.0"
+datasets = "^2.18.0"
+python-dotenv = "^1.0.1"
+jinja2 = "^3.1.3"
+fastapi = "^0.110.1"
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
