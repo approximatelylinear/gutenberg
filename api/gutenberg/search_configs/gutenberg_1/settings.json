@@ -34,7 +34,7 @@
                     "asciifolding",
                     "english_stop",
                     "english_stemmer"
-                ],
+                ]
             },
             "bigram": {
                 "type": "custom",
