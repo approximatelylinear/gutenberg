@@ -1,16 +1,14 @@
 {
-  "mappings": {
-    "dynamic": "true",
-    "properties": {
-      "author": {
-        "type": "text"
-      },
-      "text": {
-        "type": "text"
-      },
-      "title": {
-        "type": "float"
-      }
+  "dynamic": "true",
+  "properties": {
+    "author": {
+      "type": "text"
+    },
+    "text": {
+      "type": "text"
+    },
+    "title": {
+      "type": "text"
     }
   }
 }
