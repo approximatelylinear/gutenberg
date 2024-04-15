@@ -1,16 +1,13 @@
 
 import re
 
-# Ingester
-#   - Read a dataset
-#   - Perform transformations
-#   - Index the data
+from datasets import load_dataset
+
 
 class Ingester:
-    def __init__(self, client, dataset, es_index):
-        self.client = client
-        self.dataset = dataset
+    def __init__(self, es_index):
         self.es_index = es_index
+        self.transformers = []
 
     def ingest(self):
         data = self.read()
@@ -23,32 +20,47 @@ class Ingester:
     def transform(self, data):
         for transformer in self.transformers:
             data = transformer.transform(data)
-        assert '_id' in data, 'Data must have an _id field'
         return data
 
     def index(self, data):
-        self.client.index(index=self.es_index.name, id=data.pop('_id'), body=data)
+        if isinstance(data, dict):
+            self.es_index.index_document(data)
+        else:
+            for doc in data:
+                self.es_index.index_document(doc)
 
     def add_transformer(self, transformer):
         self.transformers.append(transformer)
 
 
 class GutenbergIngester(Ingester):
-    def __init__(self, client, dataset, es_index):
-        super().__init__(client, dataset, es_index)
-        self.transformers = [GutenbergTransformer()]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.add_transformer(GutenbergTransformer())
 
     def read(self):
-        return self.dataset.read()
+        gutenberg_ds = load_dataset(
+            'manu/project_gutenberg',
+            split="en[:1%]"
+        )
+        for row in gutenberg_ds:
+            yield row
 
 
 class Transformer:
-    def transform(self, data):
+    def transform_record(self, data):
         raise NotImplementedError
+
+    def transform(self, data):
+        if isinstance(data, dict):
+            return self.transform_record(data)
+        else:
+            for row in data:
+                yield self.transform_record(row)
 
 
 class GutenbergTransformer(Transformer):
-    def transform(self, data):
+    def transform_record(self, data):
         result = {'_id': data['id']}
         metadata, text = re.split(
             r'\*\*\* ?START OF (?:THE|THIS) PROJECT GUTENBERG EBOOK[^\*]+\*\*\*', data['text'], maxsplit=1)
