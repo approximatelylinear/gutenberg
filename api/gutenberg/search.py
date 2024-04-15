@@ -28,6 +28,8 @@ class Searcher:
             body=es_query
         )
         hits = result['hits']['hits']
+        # return just the title
+        hits = [{'title': hit['_source']['title']} for hit in hits]
         return hits
 
     def random_doc(self):
