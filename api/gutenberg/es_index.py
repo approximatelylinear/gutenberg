@@ -45,6 +45,7 @@ class EsIndex:
         self.es_client.indices.delete(index=self.index_name)
 
     def index_document(self, document):
+        assert '_id' in document, 'Document must have an _id field'
         es_id = document.pop('_id')
         self.es_client.index(
             index=self.index_name,
