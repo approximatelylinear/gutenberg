@@ -1,0 +1,34 @@
+{
+    "properties": {
+        "text": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+                "english": {
+                    "type": "text",
+                    "analyzer": "standard_english"
+                }
+            }
+        },
+        "title": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+                "english": {
+                    "type": "text",
+                    "analyzer": "standard_english"
+                }
+            }
+        },
+        "author": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+                "english": {
+                    "type": "text",
+                    "analyzer": "standard_english"
+                }
+            }
+        }
+    }
+}
