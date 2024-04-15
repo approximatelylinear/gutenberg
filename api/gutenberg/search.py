@@ -29,3 +29,14 @@ class Searcher:
         )
         hits = result['hits']['hits']
         return hits
+
+    def random_doc(self):
+        result = self.es_client.search(
+            index=self.index_name,
+            body={
+                "query": {
+                    "function_score": {
+                        "random_score": {}}
+                        }, "size": 1}
+        )
+        return result['hits']['hits'][0]['_source']
