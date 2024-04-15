@@ -2,6 +2,11 @@
 
 # Set the password for the elastic user
 export ELASTIC_PASSWORD="elastic"
+export ELASTIC_PORT="9200"
+export ELASTIC_NODE_PORT="9300"
+export ELASTIC_VERSION="8.13.0"
+export KIBANA_PORT="5601"
+
 
 setup_elasticsearch() {
     # Check if the elastic network already exists
@@ -11,9 +16,9 @@ setup_elasticsearch() {
     fi
 
     # Check if the Elasticsearch image exists
-    if ! docker image inspect docker.elastic.co/elasticsearch/elasticsearch:8.13.0 &>/dev/null; then
+    if ! docker image inspect docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION} &>/dev/null; then
         # Pull Elasticsearch image
-        docker pull docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+        docker pull docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
     fi
 }
 
@@ -27,7 +32,7 @@ start_elasticsearch() {
     else
         # Start ES and capture the output
         # TODO: Test this out
-        docker run -d --name es01 --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}" -t docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+        docker run -d --name es01 --net elastic -p ${ELASTIC_PORT}:9200 -p ${ELASTIC_NODE_PORT}:9300 -e "discovery.type=single-node" -e "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}" -t docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
     fi
 
     # Check if the CA certificate is already set up
@@ -69,7 +74,7 @@ check_elasticsearch_status() {
         exit 1
     else
         # Check ES status
-        curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+        curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:${ELASTIC_PORT}
     fi
 }
 
@@ -117,8 +122,8 @@ remove_elasticsearch() {
 
 start_kibana() {
     # Pull Kibana image
-    if ! docker image inspect docker.elastic.co/kibana/kibana:8.13.0 &>/dev/null; then
-        docker pull docker.elastic.co/kibana/kibana:8.13.0
+    if ! docker image inspect docker.elastic.co/kibana/kibana:${ELASTIC_VERSION} &>/dev/null; then
+        docker pull docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
     fi
 
     # Check if Kibana is already running
@@ -126,7 +131,7 @@ start_kibana() {
         echo "Kibana is already running."
     else
         # Start Kibana
-        docker run -d --name kibana --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.13.0
+        docker run -d --name kibana --net elastic -p ${KIBANA_PORT}:5601 docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
     fi
     # When you start Kibana, a unique URL is output to your terminal. To access Kibana:
     # - Open the generated URL in your browser.
@@ -211,6 +216,22 @@ main() {
             --remove-all)
                 remove_all
                 exit 0
+                ;;
+            --elastic-port)
+                export ELASTIC_PORT="$2"
+                shift
+                ;;
+            --elastic-node-port)
+                export ELASTIC_NODE_PORT="$2"
+                shift
+                ;;
+            --elastic-version)
+                export ELASTIC_VERSION="$2"
+                shift
+                ;;
+            --kibana-port)
+                export KIBANA_PORT="$2"
+                shift
                 ;;
             *)
                 echo "Invalid option: $key"
