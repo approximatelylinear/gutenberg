@@ -45,7 +45,12 @@ class EsIndex:
         self.es_client.indices.delete(index=self.index_name)
 
     def index_document(self, document):
-        self.es_client.index(index=self.index_name, body=document)
+        es_id = document.pop('_id')
+        self.es_client.index(
+            index=self.index_name,
+            id=es_id,
+            body=document
+        )
 
     def search(self, query):
         return self.es_client.search(index=self.index_name, body=query)
