@@ -69,13 +69,15 @@ def search(
         index: str,
         query: str,
         page_number: int = Query(1, ge=1),
-        highlight: bool = False
+        highlight: bool = False,
+        explain: bool = False
     ):
     try:
         es_client = make_client()
         searcher = Searcher(es_index=EsIndex(es_client, index))
         hits = searcher.search(
-            query, highlight=highlight, page_number=page_number
+            query, highlight=highlight, page_number=page_number,
+            explain=explain
         )
         total_results = len(hits)
         total_pages = 1  # Assuming 1 page for now

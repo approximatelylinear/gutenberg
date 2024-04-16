@@ -336,3 +336,23 @@ i {
   overflow: visible;
   text-overflow: initial;
 } */
+
+
+.explanation {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.explanation span {
+  margin-right: 10px;
+}
+
+.explanation span:first-child {
+  margin-left: 0;
+}
+
+.explanation span:last-child {
+  margin-right: 0;
+}

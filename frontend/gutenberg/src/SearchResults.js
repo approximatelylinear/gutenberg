@@ -9,10 +9,12 @@ const SearchResults = ({ searchQuery, results }) => {
             {results.length > 0 ? (
                 results.map(result => (
                     <SearchResult
-                        key={result.id}
-                        title={result.title.substr(0, 50)}
-                        content={result.text}
-                        author={result.author}
+                        key={result._id}
+                        title={result._source.title.substr(0, 50)}
+                        content={result._source.text}
+                        author={result._source.author}
+                        score={result._score}
+                        explanation={result.parsed_explanation}
                     />
                 ))
             ) : (

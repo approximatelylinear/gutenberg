@@ -1,0 +1,27 @@
+{
+    "mappings": {
+        "properties": {
+            "author": {
+                "type": "text"
+            },
+            "text": {
+                "type": "text"
+            },
+            "title": {
+                "type": "text"
+            },
+            "paragraph": {
+                "type": "nested",
+                "properties": {
+                    "vector": {
+                        "type": "dense_vector",
+                        "dims": 384
+                    },
+                    "text": {
+                        "type": "text"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "query": {
+        "match": {
+            "title": {
+                "query": "{{ qs }}",
+                "boost": 0.9
+            }
+        }
+    },
+    "knn": {
+        "query_vector": "{{ qv }}",
+        "field": "passage.vector",
+        "k": 2,
+        "num_candidates": 2,
+        "inner_hits": {
+            "_source": false,
+            "fields": [
+                "paragraph.text"
+            ],
+            "size": 1
+        }
+    }
+}

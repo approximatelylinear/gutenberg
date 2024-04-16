@@ -17,13 +17,14 @@ import SearchResults from '../SearchResults';
 const fetchData = async (selectedIndex, query) => {
     try {
         console.log('fetching search data...')
-        const response = await fetch(`http://localhost:8000/search?index=${selectedIndex}&query=${query}`);
+        const response = await fetch(`http://localhost:8000/search?index=${selectedIndex}&query=${query}&explain=true`);
         console.log('response:', response);
         if (!response.ok) {
             console.error('Error fetching search results:', response.statusText);
             return [];
         }
         const data = await response.json();
+        console.log('data:', data);
         return data.current_page;
     } catch (error) {
         console.error('Error fetching search results:', error);

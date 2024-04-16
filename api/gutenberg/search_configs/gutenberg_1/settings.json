@@ -12,16 +12,11 @@
                     "asciifolding"
                 ]
             },
-            "no_punc": {
+            "word_split": {
                 "type": "custom",
-                "tokenizer": "standard",
-                "char_filter": [
-                    "html_strip", "punctuation"
-                ],
+                "tokenizer": "whitespace",
                 "filter": [
-                    "lowercase",
-                    "asciifolding",
-                    "unique"
+                    "word_delimiter_graph"
                 ]
             },
             "standard_english": {
@@ -29,11 +24,11 @@
                 "tokenizer": "standard",
                 "char_filter": ["html_strip"],
                 "filter": [
-                    "english_poss_stemmer",
+                    "en_poss_stemmer",
                     "lowercase",
                     "asciifolding",
-                    "english_stop",
-                    "english_stemmer"
+                    "en_stop",
+                    "en_stemmer"
                 ]
             },
             "bigram": {
@@ -54,12 +49,6 @@
                     "asciifolding",
                     "trigram"
                 ]
-            }
-        },
-        "char_filter": {
-            "punctuation": {
-                "type": "mapping",
-                "mappings": [".=>", ". =>"]
             }
         },
         "filter": {
@@ -86,14 +75,6 @@
                 "min_shingle_size": 3,
                 "max_shingle_size": 3,
                 "output_unigrams": false
-            },
-            "min_2_chars": {
-                "type": "length",
-                "min": 2
-            },
-            "trunc_20_chars": {
-                "type": "truncate",
-                "length": 20
             }
         }
     }
