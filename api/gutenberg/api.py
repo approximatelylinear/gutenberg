@@ -87,9 +87,14 @@ def search(
             "total_results": total_results,
             "total_pages": total_pages
         }
+        return JSONResponse(response)
     except Exception as e:
         response = {
             "error": str(e)
         }
-    response = JSONResponse(response)
-    return response
+        return JSONResponse(response, status_code=500)
+
+
+@app.get("/indices")
+def get_indices():
+    return {"indices": Searcher.get_indices()}

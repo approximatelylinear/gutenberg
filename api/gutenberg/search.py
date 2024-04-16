@@ -50,3 +50,9 @@ class Searcher:
             body={"query": {"match_all": {}}}
         )
         return result['hits']['hits']
+
+    @classmethod
+    def get_indices(self):
+        search_configs = os.listdir(SEARCH_CONFIGS_DIR)
+        indices = [index for index in search_configs if os.path.isdir(os.path.join(SEARCH_CONFIGS_DIR, index))]
+        return [{'name': index, 'id': index} for index in indices]
