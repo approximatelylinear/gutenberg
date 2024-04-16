@@ -74,13 +74,13 @@ class Searcher:
             index=self.index_name,
             **es_query
         )
+        result = self.es_client.search(index=self.index_name,**es_query)
         # print(pformat(result))
         # import pdb; pdb.set_trace()
         hits = result['hits']['hits']
         if explain:
             for hit in hits:
                 hit['parsed_explanation'] = extract_per_field_similarity(hit['_explanation'])
-
         hits = [hit for hit in hits]
         return hits
 

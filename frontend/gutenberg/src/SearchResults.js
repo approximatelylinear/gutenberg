@@ -15,6 +15,7 @@ const SearchResults = ({ searchQuery, results }) => {
                         author={result._source.author}
                         score={result._score}
                         explanation={result.parsed_explanation}
+                        inner_hits={result.inner_hits}
                     />
                 ))
             ) : (

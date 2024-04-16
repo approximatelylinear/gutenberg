@@ -1,21 +1,19 @@
 {
-    "mappings": {
-        "properties": {
-            "author": {
-                "type": "text"
-            },
-            "text": {
-                "type": "text"
-            },
-            "title": {
-                "type": "text"
-            },
-            "passage": {
-                "type": "nested",
-                "properties": {
-                    "text": {
-                        "type": "text"
-                    }
+    "properties": {
+        "author": {
+            "type": "text"
+        },
+        "text": {
+            "type": "text"
+        },
+        "title": {
+            "type": "text"
+        },
+        "passages": {
+            "type": "nested",
+            "properties": {
+                "text": {
+                    "type": "text"
                 }
             }
         }

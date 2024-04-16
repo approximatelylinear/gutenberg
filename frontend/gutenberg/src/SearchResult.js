@@ -1,6 +1,34 @@
 import React, { useState } from 'react';
 
 
+const PassageList = ({ passages }) => {
+    // Extract the list of passages from the provided structure
+    const passageList = passages.hits.hits.map(hit => {
+        // if (
+        //     hit.highlight &&
+        //     hit.highlight["passages.text"] &&
+        //     hit.highlight["passages.text"].length > 0
+        // ) {
+        //     return hit.highlight['passages.text'][0];
+        // }
+        return hit._source.text;
+    });
+
+    return (
+      <div className='passage-list'>
+        <h4>Passages:</h4>
+        <ul>
+          {passageList.map((passage, index) => (
+            <li key={index}>
+                <span dangerouslySetInnerHTML={{ __html: passage }} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+
 const SearchExplanation = ({ score, terms }) => {
     return (
         <div className="explanation">
@@ -19,19 +47,22 @@ const SearchExplanation = ({ score, terms }) => {
 };
 
 
-const SearchResult = ({ title, content, author, explanation, score }) => {
+const SearchResult = ({ title, content, author, explanation, score, inner_hits }) => {
     const [expanded, setExpanded] = useState(false);
 
     const handleContentClick = () => {
         setExpanded(!expanded);
     };
 
+    const passages = inner_hits?.passages;
+
     return (
         <div className="search-result">
             <h3 onClick={handleContentClick}>{title}</h3>
             <p><em>Author: {author}</em></p>
             <p><em>Content: </em>{expanded ? `${content.substr(0, 1000)}` : `${content.substr(0, 100)}${content.length > 100 ? '...' : ''}`}</p>
-            {explanation && <SearchExplanation score={score} terms={explanation} />}
+            { passages && <PassageList passages={passages} /> }
+            { explanation && <SearchExplanation score={score} terms={explanation} /> }
         </div>
     );
 };

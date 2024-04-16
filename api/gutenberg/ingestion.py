@@ -4,6 +4,38 @@ import re
 from datasets import load_dataset
 
 
+def split_text_into_passages(
+        text,
+        split_characters=None,
+        max_length=2000,
+        min_length=100,
+    ):
+    if split_characters is None:
+        split_characters = ['\n\n', '\n'] + list('.?!,')
+    passages = []
+
+    def split_recursively(text, split_chars):
+        if len(text) <= max_length:
+            passages.append(text)
+            return
+
+        if not len(split_chars):
+            return
+
+        split_char = split_chars[0]
+        parts = text.split(split_char)
+
+        for part in parts:
+            if len(part) <= max_length:
+                if (len(part) > 0):
+                    passages.append(part)
+            else:
+                split_recursively(part, split_chars[1:])
+
+    split_recursively(text, split_characters)
+    return passages
+
+
 class Ingester:
     def __init__(self, es_index):
         self.es_index = es_index
@@ -26,7 +58,9 @@ class Ingester:
         if isinstance(data, dict):
             self.es_index.index_document(data)
         else:
-            for doc in data:
+            for idx, doc in enumerate(data):
+                if idx % 100 == 0:
+                    print(f'Indexed {idx} documents')
                 self.es_index.index_document(doc)
 
     def add_transformer(self, transformer):
@@ -72,4 +106,8 @@ class GutenbergTransformer(Transformer):
                 if value is not None:
                     result[key.lower().replace(' ', '_')] = value.strip()
         result['metadata'] = metadata
+        result['passages'] = [
+            {'text': passage} for passage
+            in split_text_into_passages(result['text'])
+        ]
         return result

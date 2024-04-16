@@ -1,5 +1,6 @@
 import json
 import os
+from pprint import pformat
 
 from gutenberg.settings import SEARCH_CONFIGS_DIR
 
@@ -47,6 +48,7 @@ class EsIndex:
     def index_document(self, document):
         assert '_id' in document, 'Document must have an _id field'
         es_id = document.pop('_id')
+        # print(f'indexing document:\n{pformat(document)}\n')
         self.es_client.index(
             index=self.index_name,
             id=es_id,

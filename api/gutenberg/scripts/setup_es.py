@@ -1,4 +1,5 @@
 import argparse
+from pprint import pformat
 
 from gutenberg.client import make_client
 from gutenberg.es_index import EsIndex
@@ -43,7 +44,7 @@ def main():
             es_index=gutenburg_index
         )
         # print(searcher.all_docs())
-        searcher.search("the", explain=True)
+        print(pformat(searcher.search("the", explain=True)))
 
 
 if __name__ == '__main__':

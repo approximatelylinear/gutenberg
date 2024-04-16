@@ -1,0 +1,82 @@
+{
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "index.mapping.nested_objects.limit": 100000,
+    "analysis": {
+        "analyzer": {
+            "default": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "char_filter": ["html_strip"],
+                "filter": [
+                    "lowercase",
+                    "asciifolding"
+                ]
+            },
+            "word_split": {
+                "type": "custom",
+                "tokenizer": "whitespace",
+                "filter": [
+                    "word_delimiter_graph"
+                ]
+            },
+            "standard_english": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "char_filter": ["html_strip"],
+                "filter": [
+                    "en_poss_stemmer",
+                    "lowercase",
+                    "asciifolding",
+                    "en_stop",
+                    "en_stemmer"
+                ]
+            },
+            "bigram": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "char_filter": ["html_strip"],
+                "filter": [
+                    "lowercase",
+                    "asciifolding",
+                    "bigram"]
+            },
+            "trigram": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "char_filter": ["html_strip"],
+                "filter": [
+                    "lowercase",
+                    "asciifolding",
+                    "trigram"
+                ]
+            }
+        },
+        "filter": {
+            "en_stop": {
+                "type": "stop",
+                "stopwords": "_english_"
+            },
+            "en_stemmer": {
+                "type": "stemmer",
+                "language": "english"
+            },
+            "en_poss_stemmer": {
+                "type": "stemmer",
+                "language": "possessive_english"
+            },
+            "bigram": {
+                "type": "shingle",
+                "min_shingle_size": 2,
+                "max_shingle_size": 2,
+                "output_unigrams": false
+            },
+            "trigram": {
+                "type": "shingle",
+                "min_shingle_size": 3,
+                "max_shingle_size": 3,
+                "output_unigrams": false
+            }
+        }
+    }
+}

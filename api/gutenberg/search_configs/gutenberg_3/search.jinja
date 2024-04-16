@@ -1,141 +1,182 @@
 {
   "query": {
-    "nested": {
-      "path": "passages",
-        "query": {
-            "bool": {
-                "should": [
-                    {
-                        "multi_match": {
-                            "query": "{{ qs }}",
-                            "type": "phrase",
-                            "slop": 1,
-                            "fields": ["text", "author^20", "title"],
-                            "boost": 10
+    "bool": {
+        "should": [
+            {
+                "bool": {
+                    "should": [
+                        {
+                            "multi_match": {
+                                "query": "{{ qs }}",
+                                "type": "phrase",
+                                "slop": 1,
+                                "fields": ["author^20", "title"],
+                                "boost": 50
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": "{{ qs }}",
+                                "type": "best_fields",
+                                "operator": "and",
+                                "fields": ["author.english^20", "title.english"],
+                                "boost": 10
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": "{{ qs }}",
+                                "type": "best_fields",
+                                "operator": "and",
+                                "fields": ["author.english^20", "title.english"],
+                                "fuzziness": "AUTO",
+                                "prefix_length": 1,
+                                "boost": 5
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": "{{ qs }}",
+                                "type": "best_fields",
+                                "operator": "or",
+                                "fields": ["author.english^20", "title.english"],
+                                "boost": 4
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": "{{ qs }}",
+                                "type": "best_fields",
+                                "operator": "or",
+                                "fields": ["author.english^20", "title.english"],
+                                "fuzziness": "AUTO",
+                                "prefix_length": 1,
+                                "boost": 2
+                            }
+                        },
+                        {
+                            "dis_max": {
+                                "queries": [
+                                    {
+                                        "multi_match": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title", "title.english^2", "title.word_split"],
+                                            "type": "most_fields",
+                                            "operator": "and",
+                                            "boost": 2
+                                        }
+                                    },
+                                    {
+                                        "multi_match": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title", "title.english^2", "title.word_split"],
+                                            "type": "most_fields",
+                                            "fuzziness": "AUTO",
+                                            "prefix_length": 1,
+                                            "operator": "and"
+                                        }
+                                    },
+                                    {
+                                        "multi_match": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["author", "author.english^2", "author.word_split"],
+                                            "type": "most_fields",
+                                            "operator": "and",
+                                            "boost": 10
+                                        }
+                                    },
+                                    {
+                                        "multi_match": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["author", "author.english^2", "author.word_split"],
+                                            "type": "most_fields",
+                                            "fuzziness": "AUTO",
+                                            "prefix_length": 1,
+                                            "operator": "and",
+                                            "boost": 5
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "dis_max": {
+                                "queries": [
+                                    {
+                                        "combined_fields": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title", "author"],
+                                            "operator": "and"
+                                        }
+                                    },
+                                    {
+                                        "combined_fields": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title.english", "author.english"],
+                                            "operator": "and",
+                                            "boost": 2
+                                        }
+                                    },
+                                    {
+                                        "combined_fields": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title.word_split", "author.word_split"],
+                                            "operator": "and"
+                                        }
+                                    }
+                                ],
+                                "boost": 3
+                            }
+                        },
+                        {
+                            "dis_max": {
+                                "queries": [
+                                    {
+                                        "combined_fields": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title", "author"],
+                                            "operator": "or"
+                                        }
+                                    },
+                                    {
+                                        "combined_fields": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title.english", "author.english"],
+                                            "operator": "or"
+                                        }
+                                    },
+                                    {
+                                        "combined_fields": {
+                                            "query": "{{ qs }}",
+                                            "fields": ["title.word_split", "author.word_split"],
+                                            "operator": "or"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "nested": {
+                    "path": "passages",
+                    "query": {
+                        "match": {
+                            "passages.text": "{{ qs }}"
                         }
                     },
-                    {
-                        "multi_match": {
-                            "query": "{{ qs }}",
-                            "type": "best_fields",
-                            "operator": "and",
-                            "fields": ["text", "author^20", "title"],
-                            "fuzziness": "AUTO",
-                            "prefix_length": 1,
-                            "boost": 5
+                    "inner_hits": {
+                        "highlight": {
+                        "fields": {
+                            "passages.text": {}
                         }
-                    },
-                    {
-                        "multi_match": {
-                            "query": "{{ qs }}",
-                            "type": "best_fields",
-                            "operator": "or",
-                            "fields": ["text", "author^20", "title"],
-                            "fuzziness": "AUTO",
-                            "prefix_length": 1,
-                            "boost": 2
-                        }
-                    },
-                    {
-                        "dis_max": {
-                            "queries": [
-                                {
-                                    "multi_match": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["text", "text.english", "text.word_split"],
-                                        "type": "most_fields",
-                                        "fuzziness": "AUTO",
-                                        "prefix_length": 1,
-                                        "operator": "and"
-                                    }
-                                },
-                                {
-                                    "multi_match": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["title", "title.english", "title.word_split"],
-                                        "type": "most_fields",
-                                        "fuzziness": "AUTO",
-                                        "prefix_length": 1,
-                                        "operator": "and"
-                                    }
-                                },
-                                {
-                                    "multi_match": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["author", "author.english", "author.word_split"],
-                                        "type": "most_fields",
-                                        "fuzziness": "AUTO",
-                                        "prefix_length": 1,
-                                        "operator": "and",
-                                        "boost": 5
-
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "dis_max": {
-                            "queries": [
-                                {
-                                    "combined_fields": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["text", "title", "author"],
-                                        "operator": "and"
-                                    }
-                                },
-                                {
-                                    "combined_fields": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["text.english", "title.english", "author.english"],
-                                        "operator": "and"
-                                    }
-                                },
-                                {
-                                    "combined_fields": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["text.word_split", "title.word_split", "author.word_split"],
-                                        "operator": "and"
-                                    }
-                                }
-                            ],
-                            "boost": 3
-                        }
-                    },
-                    {
-                        "dis_max": {
-                            "queries": [
-                                {
-                                    "combined_fields": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["text", "title", "author"],
-                                        "operator": "or"
-                                    }
-                                },
-                                {
-                                    "combined_fields": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["text.english", "title.english", "author.english"],
-                                        "operator": "or"
-                                    }
-                                },
-                                {
-                                    "combined_fields": {
-                                        "query": "{{ qs }}",
-                                        "fields": ["text.word_split", "title.word_split", "author.word_split"],
-                                        "operator": "or"
-                                    }
-                                }
-                            ]
                         }
                     }
-                ]
+                }
             }
-        }
-      "inner_hits": {
-      }
+        ]
     }
+
   }
 }
-
-
