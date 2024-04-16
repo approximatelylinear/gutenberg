@@ -42,9 +42,7 @@ export default function Root() {
                     <NavLink
                       to={`search/${searchIndex.name}`}
                     >
-                      {/* <Link to={`search/${searchIndex.name}`}> */}
                         {searchIndex.name}
-                      {/* </Link> */}
                     </NavLink>
                   </li>
                 ))}
@@ -57,10 +55,10 @@ export default function Root() {
           </nav>
         </div>
         {/* useNavigation returns the current navigation state: it can be one of "idle" | "submitting" | "loading". */}
-        <div id="detail" className="detail"
-          // className={
-          //   navigation.state === "loading" ? "loading" : ""
-          // }
+        <div id="detail"
+          className={
+            navigation.state === "loading" ? "loading" : ""
+          }
         >
           <Outlet />
         </div>
